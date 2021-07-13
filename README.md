@@ -7,56 +7,71 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## Runner Rank (API REST)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Este projeto foi desenvolvido com [Laravel Framework](https://laravel.com) versão 8.34.0 e [MySQL Server](https://www.mysql.com/) versão 5.7.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Sobre Runner Rank
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+O Runner Rank é uma API para gerenciamento de corredores, provas e resultados. Também capaz de fornecer a listagem de classificação Geral ou por Idade(18-25 anos, 25-35 anos, 35-45 anos, 45-55 anos e acima de 55 anos).
 
-## Learning Laravel
+## Instalação utilizando Docker
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+#### Requisitos
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Git](https://git-scm.com/downloads)
 
-## Laravel Sponsors
+Para instalar o projeto execute **todos os passos** abaixo, nesta ordem.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+Clone o repositório [API Runner Rank](https://github.com/flailton/api-runner-rank) do GitHub:
 
-### Premium Partners
+```bash
+git clone https://github.com/flailton/api-runner-rank && cd api-runner-rank
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+Faça o build das imagens Docker utilizadas no projeto e inicie os containers da aplicação:
 
-## Contributing
+```bash
+docker-compose up -d --build
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Execute o comando para instalar as dependências do projeto:
 
-## Code of Conduct
+```bash
+docker-compose exec php composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Execute o comando para gerar a chave da aplicação:
 
-## Security Vulnerabilities
+```bash
+docker-compose exec app php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Execute o comando para executar as migrations do Laravel e montar a estrutura do banco de dados:
 
-## License
+```bash
+docker-compose exec app php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Execute o comando para executar as seeds do Laravel e popular as tabelas do banco de dados:
+
+```bash
+docker-compose exec app php artisan db:seed
+```
+
+## Serviços
+
+Após realizada finalizada a instalação, o ambiente ficará acessível através do endereço `http://localhost:8000/`.
+
+| Serviço | Request (URL) | Request (Data) |
+|---------|-----------|------------|
+| Incluir Corredor | [POST] http://localhost:8000/api/corredores | nome:`Nome`<br>cpf:`CPF`<br>data_nascimento:`Dada de nascimento (dd/mm/YYY / dd-mm-YYY / YYYY-mm-dd)` |
+| Incluir Prova | [POST] http://localhost:8000/api/provas | tipo_prova_id:`Tipo de Prova`<br>data_prova:`Dada da prova (dd/mm/YYY / dd-mm-YYY / YYYY-mm-dd)` |
+| Incluir Corredor em Prova | [POST] http://localhost:8000/api/inscricao | prova_id:`ID Corredor`<br>corredor_id:`ID Prova` |
+| Incluir Resultado do Corredor | [POST] http://localhost:8000/api/resultados | prova_id:`ID Corredor`<br>corredor_id:`ID Prova`<br>tempo_inicio_prova:`Tempo de início (H:i:s)`<br>tempo_fim_prova:`Tempo de conclusão (H:i:s)` |
+| Listagem de Classificação (Idade) | [GET] http://localhost:8000/api/classificacao_idade | - |
+| Listagem de Classificação (Geral) | [GET] http://localhost:8000/api/classificacao_geral | - |
+| Listagem de Tipos de Prova | [GET] http://localhost/api/tipo_provas | - |
+
