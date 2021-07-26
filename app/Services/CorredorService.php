@@ -172,8 +172,7 @@ class CorredorService implements ICorredorService
     public function validarResultadoByProvaId(int $id, int $prova_id)
     {
         $corredor = $this->corredorRepository->show($id);
-        var_dump($corredor->resultados);
-        die;
+
         foreach ($corredor->resultados as $resultado) {
             if ($resultado['prova_id'] === $prova_id) {
                 return true;
