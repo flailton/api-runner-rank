@@ -31,6 +31,25 @@ Clone o repositório [API Runner Rank](https://github.com/flailton/api-runner-ra
 git clone https://github.com/flailton/api-runner-rank && cd api-runner-rank
 ```
 
+Crie o .env, com base no .env de exemplo:
+
+```bash
+cp .env.example .env
+```
+
+Substitua os valores das configurações de acesso ao banco de dados no .env:
+
+```bash
+...
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=runnerrank
+DB_USERNAME=root
+DB_PASSWORD=root
+...
+```
+
 Faça o build das imagens Docker utilizadas no projeto e inicie os containers da aplicação:
 
 ```bash
@@ -40,7 +59,7 @@ docker-compose up -d --build
 Execute o comando para instalar as dependências do projeto:
 
 ```bash
-docker-compose exec php composer install
+docker-compose exec app composer install
 ```
 
 Execute o comando para gerar a chave da aplicação:
